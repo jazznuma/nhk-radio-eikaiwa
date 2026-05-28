@@ -24,14 +24,14 @@ jobs:
 
       - name: Download NHK Radio
         run: |
-          mkdir -p x7k9q2/audio
+          mkdir -p x7k9q2/p01
           yt-dlp \
           --playlist-items 1 \
           --concurrent-fragments 8 \
           -x \
           --audio-format mp3 \
           "https://www.nhk.or.jp/radio/ondemand/detail.html?p=PMMJ59J6N2_01" \
-          -o "x7k9q2/audio/latest.%(ext)s"
+          -o "x7k9q2/p01/latest.%(ext)s"
 
           mkdir -p x7k9q2/business-english
           yt-dlp \
