@@ -33,6 +33,24 @@ jobs:
           "https://www.nhk.or.jp/radio/ondemand/detail.html?p=PMMJ59J6N2_01" \
           -o "x7k9q2/audio/latest.%(ext)s"
 
+          mkdir -p x7k9q2/business-english
+          yt-dlp \
+          --playlist-items 1 \
+          --concurrent-fragments 8 \
+          -x \
+          --audio-format mp3 \
+          "https://www.nhk.or.jp/radio/ondemand/detail.html?p=368315KKP8_01" \
+          -o "x7k9q2/business-english/latest.%(ext)s"
+
+          mkdir -p x7k9q2/gendai-english
+          yt-dlp \
+          --playlist-items 1 \
+          --concurrent-fragments 8 \
+          -x \
+          --audio-format mp3 \
+          "https://www.nhk.or.jp/radio/ondemand/detail.html?p=77RQWQX1L6_01" \
+          -o "x7k9q2/gendai-english/latest.%(ext)s"
+
       - name: Commit files
         run: |
           git config user.name github-actions
