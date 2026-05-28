@@ -1,0 +1,35 @@
+name: NHK Radio Download
+
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install yt-dlp
+        run: |
+          pip install yt-dlp
+
+      - name: Download NHK Radio
+        run: |
+          mkdir -p audio
+          yt-dlp \
+          -x \
+          --audio-format mp3 \
+          "https://www.nhk.or.jp/radio/ondemand/detail.html?p=PMMJ59J6N2_01" \
+          -o "audio/latest.%(ext)s"
+
+      - name: Commit files
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "update audio" || exit 0
+          git push
