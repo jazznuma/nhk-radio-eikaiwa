@@ -16,14 +16,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install yt-dlp
+      - name: Install dependencies
         run: |
-          pip install yt-dlp
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade yt-dlp pycryptodomex
 
       - name: Download NHK Radio
         run: |
           mkdir -p audio
           yt-dlp \
+          --playlist-items 1 \
+          --concurrent-fragments 8 \
           -x \
           --audio-format mp3 \
           "https://www.nhk.or.jp/radio/ondemand/detail.html?p=PMMJ59J6N2_01" \
