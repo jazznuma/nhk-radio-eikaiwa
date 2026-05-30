@@ -26,7 +26,7 @@ jobs:
         run: |
           mkdir -p x7k9q2/p01
           yt-dlp \
-          --playlist-items 1 \
+          --playlist-items -1 \
           --concurrent-fragments 8 \
           --force-overwrites \
           -x \
@@ -36,7 +36,7 @@ jobs:
 
           mkdir -p x7k9q2/business-english
           yt-dlp \
-          --playlist-items 1 \
+          --playlist-items -1 \
           --concurrent-fragments 8 \
           --force-overwrites \
           -x \
@@ -46,7 +46,7 @@ jobs:
 
           mkdir -p x7k9q2/gendai-english
           yt-dlp \
-          --playlist-items 1 \
+          --playlist-items -1 \
           --concurrent-fragments 8 \
           --force-overwrites \
           -x \
