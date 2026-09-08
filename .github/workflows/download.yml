@@ -2,14 +2,16 @@ name: NHK Radio Download
 
 on:
   schedule:
-    - cron: '0 23 * * *'
+    - cron: '0 23 * * *'   # JST 8:00 - p01 / gendai-english
+    - cron: '0 0 * * *'    # JST 9:00 - business-english (放送終了直後の取りこぼし対策で1時間後ろ倒し)
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  download:
+  download-morning:
+    if: github.event.schedule == '0 23 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +24,7 @@ jobs:
           sudo apt-get install -y ffmpeg
           python -m pip install --upgrade yt-dlp pycryptodomex
 
-      - name: Download NHK Radio
+      - name: Download NHK Radio (p01 / gendai-english)
         run: |
           mkdir -p x7k9q2/p01
           yt-dlp \
@@ -33,16 +35,6 @@ jobs:
           --audio-format mp3 \
           "https://www.nhk.or.jp/radio/ondemand/detail.html?p=PMMJ59J6N2_01" \
           -o "x7k9q2/p01/latest.%(ext)s"
-
-          mkdir -p x7k9q2/business-english
-          yt-dlp \
-          --playlist-items -1 \
-          --concurrent-fragments 8 \
-          --force-overwrites \
-          -x \
-          --audio-format mp3 \
-          "https://www.nhk.or.jp/radio/ondemand/detail.html?p=368315KKP8_01" \
-          -o "x7k9q2/business-english/latest.%(ext)s"
 
           mkdir -p x7k9q2/gendai-english
           yt-dlp \
@@ -59,5 +51,41 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "update audio" || exit 0
+          git commit -m "update audio (morning)" || exit 0
+          git pull --rebase
+          git push
+
+  download-business-english:
+    if: github.event.schedule == '0 0 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade yt-dlp pycryptodomex
+
+      - name: Download NHK Radio (business-english)
+        run: |
+          mkdir -p x7k9q2/business-english
+          yt-dlp \
+          --playlist-items -1 \
+          --concurrent-fragments 8 \
+          --force-overwrites \
+          -x \
+          --audio-format mp3 \
+          "https://www.nhk.or.jp/radio/ondemand/detail.html?p=368315KKP8_01" \
+          -o "x7k9q2/business-english/latest.%(ext)s"
+
+      - name: Commit files
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "update audio (business-english)" || exit 0
+          git pull --rebase
           git push
